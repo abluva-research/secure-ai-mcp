@@ -5,11 +5,11 @@
 sources:
     default-pg-source:
         kind: postgres
-        host: 172.16.1.87
-        port: 5432
-        database: control_plane_dev
-        user: postgres
-        password: postgres
+        host: 172.16.1.85
+        port: 9393
+        database: chinook
+        user: Amit
+        password: Abluva@2026
         lazyConnect: true
 
 tools:

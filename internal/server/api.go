@@ -234,13 +234,13 @@ func toolInvokeHandler(s *Server, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract pseudo_key from request body (if provided) and inject into context
-	if pkRaw, ok := data["pseudo_key"]; ok {
-		delete(data, "pseudo_key")
-		if pk, ok := pkRaw.(string); ok && pk != "" {
-			ctx = pseudokey.WithPseudoKey(ctx, pk)
+	// Extract x-ablv-virtual-identity from request body (if provided) and inject into context
+	if viRaw, ok := data["x-ablv-virtual-identity"]; ok {
+		delete(data, "x-ablv-virtual-identity")
+		if vi, ok := viRaw.(string); ok && vi != "" {
+			ctx = pseudokey.WithVirtualIdentity(ctx, vi)
 			r = r.WithContext(ctx)
-			s.logger.DebugContext(ctx, fmt.Sprintf("pseudo_key provided: %s", pk))
+			s.logger.DebugContext(ctx, fmt.Sprintf("x-ablv-virtual-identity provided: %s", vi))
 		}
 	}
 

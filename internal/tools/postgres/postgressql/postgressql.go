@@ -111,9 +111,9 @@ func (t Tool) Invoke(ctx context.Context, resourceMgr tools.SourceProvider, para
 	}
 	sliceParams := newParams.AsSlice()
 
-	// Inject pseudo-key as a SQL comment if provided in context
-	if pk, ok := pseudokey.FromContext(ctx); ok {
-		newStatement = fmt.Sprintf("/* pseudo-key: %s */ %s", pk, newStatement)
+	// Inject virtual identity as a SQL comment if provided in context
+	if vi, ok := pseudokey.FromContext(ctx); ok {
+		newStatement = fmt.Sprintf("/* X-ABLV-VIRTUAL-IDENTITY =%s */ %s", vi, newStatement)
 	}
 
 	resp, err := source.RunSQL(ctx, newStatement, sliceParams)

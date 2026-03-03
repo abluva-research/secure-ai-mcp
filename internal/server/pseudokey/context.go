@@ -18,12 +18,12 @@ import "context"
 
 type contextKey struct{}
 
-// WithPseudoKey returns a new context with the pseudo key attached.
-func WithPseudoKey(ctx context.Context, key string) context.Context {
+// WithVirtualIdentity returns a new context with the virtual identity key attached.
+func WithVirtualIdentity(ctx context.Context, key string) context.Context {
 	return context.WithValue(ctx, contextKey{}, key)
 }
 
-// FromContext extracts the pseudo key from the context, if present.
+// FromContext extracts the virtual identity key from the context, if present.
 func FromContext(ctx context.Context) (string, bool) {
 	key, ok := ctx.Value(contextKey{}).(string)
 	return key, ok && key != ""

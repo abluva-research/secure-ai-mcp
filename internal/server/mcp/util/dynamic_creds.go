@@ -53,13 +53,13 @@ func ParseDynamicCredentials(raw any) (*sources.DynamicCredentials, error) {
 	return creds, nil
 }
 
-// ExtractPseudoKey checks for a "pseudo_key" in the data map, removes it,
-// and returns a new context with the pseudo key attached.
-func ExtractPseudoKey(ctx context.Context, data map[string]any) context.Context {
-	if pkRaw, ok := data["pseudo_key"]; ok {
-		delete(data, "pseudo_key")
-		if pk, ok := pkRaw.(string); ok && pk != "" {
-			return pseudokey.WithPseudoKey(ctx, pk)
+// ExtractVirtualIdentity checks for "x-ablv-virtual-identity" in the data map,
+// removes it, and returns a new context with the virtual identity attached.
+func ExtractVirtualIdentity(ctx context.Context, data map[string]any) context.Context {
+	if v, ok := data["x-ablv-virtual-identity"]; ok {
+		delete(data, "x-ablv-virtual-identity")
+		if id, ok := v.(string); ok && id != "" {
+			return pseudokey.WithVirtualIdentity(ctx, id)
 		}
 	}
 	return ctx

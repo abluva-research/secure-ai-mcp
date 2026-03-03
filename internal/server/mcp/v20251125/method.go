@@ -150,8 +150,8 @@ func toolsCallHandler(ctx context.Context, id jsonrpc.RequestId, resourceMgr *re
 		return jsonrpc.NewError(id, jsonrpc.INTERNAL_ERROR, err.Error(), nil), err
 	}
 
-	// Extract pseudo_key from arguments and inject into context
-	ctx = mcputil.ExtractPseudoKey(ctx, data)
+	// Extract x-ablv-virtual-identity from arguments and inject into context
+	ctx = mcputil.ExtractVirtualIdentity(ctx, data)
 
 	// Extract dynamic database credentials from arguments (if provided)
 	var sourceProvider tools.SourceProvider = resourceMgr
