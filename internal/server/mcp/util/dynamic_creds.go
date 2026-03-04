@@ -53,11 +53,11 @@ func ParseDynamicCredentials(raw any) (*sources.DynamicCredentials, error) {
 	return creds, nil
 }
 
-// ExtractVirtualIdentity checks for "x-ablv-virtual-identity" in the data map,
-// removes it, and returns a new context with the virtual identity attached.
+// ExtractVirtualIdentity checks for "x-ablv-virtual-identity" in the data map
+// and returns a new context with the virtual identity attached.
+// Note: Does NOT remove the parameter from data map to allow validation to succeed.
 func ExtractVirtualIdentity(ctx context.Context, data map[string]any) context.Context {
 	if v, ok := data["x-ablv-virtual-identity"]; ok {
-		delete(data, "x-ablv-virtual-identity")
 		if id, ok := v.(string); ok && id != "" {
 			return pseudokey.WithVirtualIdentity(ctx, id)
 		}

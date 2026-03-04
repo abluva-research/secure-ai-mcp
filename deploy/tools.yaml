@@ -22,6 +22,10 @@ tools:
             - name: sql
               type: string
               description: "The SQL statement to execute"
+            - name: x-ablv-virtual-identity
+              type: string
+              description: "REQUIRED: Virtual identity key for authentication"
+              required: true
 
     list_tables:
         kind: postgres-sql
@@ -32,6 +36,11 @@ tools:
             FROM information_schema.tables
             WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
             ORDER BY table_schema, table_name
+        templateParameters:
+            - name: x-ablv-virtual-identity
+              type: string
+              description: "REQUIRED: Virtual identity key for authentication"
+              required: true
 
     describe_table:
         kind: postgres-sql
@@ -46,6 +55,10 @@ tools:
             - name: table_name
               type: string
               description: "The name of the table to describe"
+            - name: x-ablv-virtual-identity
+              type: string
+              description: "REQUIRED: Virtual identity key for authentication"
+              required: true
 
     search_vector:
         kind: postgres-sql
@@ -66,6 +79,10 @@ tools:
             - name: limit_count
               type: string
               description: "Maximum number of results to return (default 10)"
+            - name: x-ablv-virtual-identity
+              type: string
+              description: "REQUIRED: Virtual identity key for authentication"
+              required: true
 
 toolsets:
     default:
