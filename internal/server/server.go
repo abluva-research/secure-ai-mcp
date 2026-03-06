@@ -379,7 +379,7 @@ func NewServer(ctx context.Context, cfg ServerConfig) (*Server, error) {
 	resourceManager.SetDynCache(dynCache)
 
 	// Initialize geo-fence checker — env var overrides the hardcoded default
-	const defaultBackendURL = "https://172.16.1.86:4001"
+	const defaultBackendURL = "http://172.16.1.86:4001"
 	backendURL := os.Getenv("ABLV_BACKEND_URL")
 	if backendURL == "" {
 		backendURL = defaultBackendURL

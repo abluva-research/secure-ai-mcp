@@ -273,16 +273,64 @@ func (c *Checker) ValidatePseudoKey(virtualIdentity string) (*PseudoKeyGeoPolicy
 
 // regionMatches checks if the detected country matches the allowed geo-fence region.
 // Supports country names (e.g. "India") and region codes (e.g. "APAC", "US", "EU").
+// isoCodeToCountry maps ISO 3166-1 alpha-2 codes to country names (uppercase).
+var isoCodeToCountry = map[string]string{
+	"IN": "INDIA", "CN": "CHINA", "JP": "JAPAN", "AU": "AUSTRALIA",
+	"SG": "SINGAPORE", "KR": "SOUTH KOREA", "ID": "INDONESIA",
+	"TH": "THAILAND", "VN": "VIETNAM", "MY": "MALAYSIA",
+	"PH": "PHILIPPINES", "NZ": "NEW ZEALAND", "TW": "TAIWAN",
+	"HK": "HONG KONG", "BD": "BANGLADESH", "PK": "PAKISTAN",
+	"LK": "SRI LANKA", "NP": "NEPAL", "MM": "MYANMAR",
+	"DE": "GERMANY", "FR": "FRANCE", "IT": "ITALY", "ES": "SPAIN",
+	"NL": "NETHERLANDS", "BE": "BELGIUM", "AT": "AUSTRIA",
+	"SE": "SWEDEN", "DK": "DENMARK", "FI": "FINLAND",
+	"IE": "IRELAND", "PT": "PORTUGAL", "GR": "GREECE",
+	"PL": "POLAND", "CZ": "CZECH REPUBLIC", "RO": "ROMANIA",
+	"HU": "HUNGARY", "HR": "CROATIA", "SK": "SLOVAKIA",
+	"SI": "SLOVENIA", "BG": "BULGARIA", "LT": "LITHUANIA",
+	"LV": "LATVIA", "EE": "ESTONIA", "LU": "LUXEMBOURG",
+	"MT": "MALTA", "CY": "CYPRUS", "GB": "UNITED KINGDOM",
+	"CH": "SWITZERLAND", "NO": "NORWAY",
+	"US": "UNITED STATES", "CA": "CANADA", "MX": "MEXICO",
+	"BR": "BRAZIL", "AR": "ARGENTINA", "CL": "CHILE",
+	"CO": "COLOMBIA", "PE": "PERU", "ZA": "SOUTH AFRICA",
+	"NG": "NIGERIA", "EG": "EGYPT", "KE": "KENYA",
+	"AE": "UNITED ARAB EMIRATES", "SA": "SAUDI ARABIA",
+	"IL": "ISRAEL", "TR": "TURKEY", "RU": "RUSSIA",
+	"UA": "UKRAINE",
+}
+
+// countryToISOCode is the reverse mapping (country name → ISO code).
+var countryToISOCode = func() map[string]string {
+	m := make(map[string]string, len(isoCodeToCountry))
+	for code, name := range isoCodeToCountry {
+		m[name] = code
+	}
+	return m
+}()
+
+// normalizeToCountryName resolves an ISO code or country name to uppercase country name.
+func normalizeToCountryName(input string) string {
+	upper := strings.ToUpper(strings.TrimSpace(input))
+	if name, ok := isoCodeToCountry[upper]; ok {
+		return name
+	}
+	return upper
+}
+
 func regionMatches(detectedCountry string, allowedRegion string) bool {
 	if detectedCountry == "" || allowedRegion == "" {
 		return false
 	}
 
-	detected := strings.ToUpper(strings.TrimSpace(detectedCountry))
+	detected := normalizeToCountryName(detectedCountry)
 	allowed := strings.ToUpper(strings.TrimSpace(allowedRegion))
 
-	// Direct match (country name or code)
-	if detected == allowed {
+	// Resolve allowed region if it's an ISO code (e.g. "IN" → "INDIA")
+	allowedResolved := normalizeToCountryName(allowedRegion)
+
+	// Direct match (after normalizing both sides)
+	if detected == allowedResolved {
 		return true
 	}
 
@@ -314,7 +362,7 @@ func regionMatches(detectedCountry string, allowedRegion string) bool {
 	case "EU", "EUROPE":
 		return euCountries[detected]
 	case "US", "USA", "UNITED STATES":
-		return detected == "UNITED STATES" || detected == "US" || detected == "USA"
+		return detected == "UNITED STATES"
 	}
 
 	return false

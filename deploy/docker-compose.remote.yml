@@ -7,7 +7,7 @@ services:
     volumes:
       - ./tools.yaml:/app/tools.yaml:ro
     environment:
-      - ABLV_BACKEND_URL=https://172.16.1.86:4001
+      - ABLV_BACKEND_URL=http://172.16.1.86:4001
     command: ["--tools-file", "/app/tools.yaml", "--address", "0.0.0.0", "--port", "5000", "--allowed-origins", "*", "--allowed-hosts", "*"]
     restart: unless-stopped
     logging:
